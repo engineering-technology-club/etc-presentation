@@ -1,0 +1,10 @@
+const V='etc-v1';
+const FILES=["./", "index.html", "css/style.css", "js/main.js", "manifest.json", "images/image1.jpeg", "images/image10.png", "images/image11.png", "images/image12.png", "images/image13.png", "images/image14.png", "images/image15.png", "images/image16.png", "images/image17.png", "images/image18.png", "images/image19.png", "images/image2.png", "images/image20.png", "images/image21.png", "images/image22.png", "images/image23.png", "images/image24.png", "images/image25.png", "images/image26.png", "images/image27.png", "images/image28.png", "images/image29.png", "images/image3.png", "images/image30.png", "images/image31.png", "images/image32.png", "images/image33.png", "images/image34.png", "images/image35.png", "images/image36.png", "images/image37.png", "images/image38.png", "images/image39.png", "images/image4.png", "images/image40.png", "images/image41.png", "images/image5.png", "images/image6.png", "images/image7.png", "images/image8.png", "images/image9.png"];
+self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting()))});
+self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==V).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
+self.addEventListener('fetch',e=>{
+  if(e.request.method!=='GET')return;
+  e.respondWith(caches.match(e.request,{ignoreSearch:true}).then(hit=>hit||fetch(e.request).then(res=>{
+    const copy=res.clone();caches.open(V).then(c=>c.put(e.request,copy));return res;
+  }).catch(()=>caches.match('index.html'))));
+});
