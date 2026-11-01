@@ -1,4 +1,4 @@
-const V = "etc-v3";
+const V = "etc-v4";
 const FILES = [
   "./",
   "index.html",
@@ -12,7 +12,7 @@ const FILES = [
   "images/team-female-branch-head-maram-alastal.png",
   "images/team-male-branch-head-ibrahim-salha.png",
   "images/team-media-head-shatha-abu-jazar.png",
-  "images/team-membership-head-fatima-badawi.png",
+  "images/team-membership-head-fatima-badawi.jpeg",
   "images/team-membership-head-mohammad-khreis.png",
   "images/team-president-mohammad-alzamili.png",
   "images/team-relations-head-alaa-alramlawi.png",
