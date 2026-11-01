@@ -5,12 +5,12 @@
  "dir": "rtl",
  "start_url": "./index.html",
  "display": "fullscreen",
- "background_color": "#02030a",
- "theme_color": "#02030a",
+ "background_color": "#F3F7FC",
+ "theme_color": "#F3F7FC",
  "icons": [
   {
-   "src": "images/image3.png",
-   "sizes": "510x510",
+   "src": "images/club-app-icon.png",
+   "sizes": "512x512",
    "type": "image/png"
   }
  ]
