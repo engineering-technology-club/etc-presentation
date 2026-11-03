@@ -1,7 +1,36 @@
 var S = [].slice.call(document.querySelectorAll(".s")),
   k = 0,
-  st = document.getElementById("stage"),
-  D = document.getElementById("dots");
+  D = document.getElementById("dots"),
+  R = document.documentElement;
+function gear(el) {
+  var n = 18,
+    a = [],
+    r1 = 100,
+    r2 = 118,
+    i,
+    t;
+  for (i = 0; i < n; i++) {
+    t = (i / n) * 6.2832;
+    var w = 3.1416 / n;
+    [
+      [r2, t - w * 0.35],
+      [r2, t + w * 0.35],
+      [r1, t + w * 0.7],
+      [r1, t + w * 1.3],
+    ].forEach(function (p) {
+      a.push(
+        (150 + Math.cos(p[1]) * p[0] * 1.25).toFixed(1) +
+          "," +
+          (150 + Math.sin(p[1]) * p[0] * 1.25).toFixed(1),
+      );
+    });
+  }
+  el.innerHTML =
+    '<svg viewBox="0 0 300 300" fill="none" stroke="currentColor" stroke-width="1.6"><polygon points="' +
+    a.join(" ") +
+    '"/><circle cx="150" cy="150" r="92"/><circle cx="150" cy="150" r="70" stroke-dasharray="3 7"/></svg>';
+}
+[].forEach.call(document.querySelectorAll(".gear"), gear);
 S.forEach(function (_, i) {
   var d = document.createElement("i");
   d.onclick = function () {
@@ -9,25 +38,42 @@ S.forEach(function (_, i) {
   };
   D.appendChild(d);
 });
+var cvc = "255,255,255";
 function go(i) {
-  k = Math.max(0, Math.min(S.length - 1, i));
-  S.forEach(function (s, j) {
-    s.classList.toggle("on", j == k);
+  i = Math.max(0, Math.min(S.length - 1, i));
+  if (i == k && S[k].classList.contains("on")) return;
+  var o = S[k];
+  S.forEach(function (s) {
+    s.classList.remove("out");
   });
+  if (o.classList.contains("on")) {
+    o.classList.remove("on");
+    o.classList.add("out");
+    setTimeout(function () {
+      o.classList.remove("out");
+    }, 1300);
+  }
+  k = i;
+  S[k].classList.add("on");
+  S[k].classList.remove("out");
   [].forEach.call(D.children, function (d, j) {
     d.classList.toggle("on", j == k);
   });
   document.getElementById("pb").style.width = ((k + 1) / S.length) * 100 + "%";
   document.getElementById("n").textContent = k + 1 + " / " + S.length;
-  document.getElementById("lg").style.opacity = k == 0 ? 0 : 1;
+  var lg = document.getElementById("lg");
+  lg.style.opacity = k == 0 ? 0 : 1;
+  lg.style.transform = k == 0 ? "scale(.4)" : "none";
+  cvc = S[k].classList.contains("l") ? "23,38,79" : "207,180,96";
   try {
     history.replaceState(null, "", "#s" + (k + 1));
   } catch (e) {}
 }
 function fit() {
-  var s = Math.min(innerWidth / 1280, (innerHeight - 56) / 720);
-  st.style.transform = "translate(-50%,-50%) scale(" + s + ")";
-  st.style.top = "calc(50% - 22px)";
+  R.style.setProperty(
+    "--k",
+    Math.min(innerWidth / 1280, (innerHeight - 60) / 720),
+  );
 }
 addEventListener("resize", fit);
 fit();
@@ -40,14 +86,13 @@ document.getElementById("pv").onclick = function () {
 document.getElementById("fs").onclick = function () {
   document.fullscreenElement
     ? document.exitFullscreen()
-    : document.documentElement.requestFullscreen &&
-      document.documentElement.requestFullscreen();
+    : R.requestFullscreen && R.requestFullscreen();
 };
 addEventListener("keydown", function (e) {
   var c = e.key;
-  if (c == "ArrowLeft" || c == "PageDown" || c == " " || c == "ArrowDown")
+  if (c == "ArrowRight" || c == "PageDown" || c == " " || c == "ArrowDown")
     go(k + 1);
-  else if (c == "ArrowRight" || c == "PageUp" || c == "ArrowUp") go(k - 1);
+  else if (c == "ArrowLeft" || c == "PageUp" || c == "ArrowUp") go(k - 1);
   else if (c == "Home") go(0);
   else if (c == "End") go(S.length - 1);
 });
@@ -72,14 +117,33 @@ addEventListener(
       go(k + (e.deltaY > 0 ? 1 : -1));
       go.t = setTimeout(function () {
         go.t = 0;
-      }, 900);
+      }, 1200);
     }
   },
   { passive: true },
 );
+addEventListener("mousemove", function (e) {
+  R.style.setProperty("--mx", (e.clientX / innerWidth - 0.5).toFixed(3));
+  R.style.setProperty("--my", (e.clientY / innerHeight - 0.5).toFixed(3));
+  var t = e.target.closest && e.target.closest(".cd,.person");
+  if (t) {
+    var r = t.getBoundingClientRect(),
+      x = (e.clientX - r.left) / r.width - 0.5,
+      y = (e.clientY - r.top) / r.height - 0.5;
+    t.style.transform =
+      "perspective(700px) rotateY(" +
+      x * -12 +
+      "deg) rotateX(" +
+      y * 10 +
+      "deg) translateZ(8px)";
+  }
+});
+addEventListener("mouseout", function (e) {
+  var t = e.target.closest && e.target.closest(".cd,.person");
+  if (t) t.style.transform = "";
+});
 var h = parseInt((location.hash || "").slice(2));
 go(h > 0 && h <= S.length ? h - 1 : 0);
-/* particles */
 var cv = document.getElementById("cv"),
   cx = cv.getContext("2d"),
   P = [],
@@ -92,12 +156,12 @@ function rs() {
 }
 rs();
 addEventListener("resize", rs);
-for (var i = 0; i < 70; i++)
+for (var i = 0; i < 55; i++)
   P.push({
     x: Math.random() * 2000,
     y: Math.random() * 1200,
-    vx: (Math.random() - 0.5) * 0.3,
-    vy: (Math.random() - 0.5) * 0.3,
+    vx: (Math.random() - 0.5) * 0.35,
+    vy: (Math.random() - 0.5) * 0.35,
   });
 addEventListener("mousemove", function (e) {
   m.x = e.clientX;
@@ -110,13 +174,15 @@ addEventListener("mousemove", function (e) {
     p.y += p.vy;
     if (p.x < 0 || p.x > W) p.vx *= -1;
     if (p.y < 0 || p.y > H) p.vy *= -1;
-    cx.fillStyle = "rgba(35,134,207,.55)";
-    cx.fillRect(p.x, p.y, 1.8, 1.8);
+    cx.fillStyle = "rgba(" + cvc + ",.45)";
+    cx.beginPath();
+    cx.arc(p.x, p.y, 2, 0, 6.3);
+    cx.fill();
     for (var j = i + 1; j < P.length; j++) {
       var q = P[j],
         d = Math.hypot(p.x - q.x, p.y - q.y);
-      if (d < 110) {
-        cx.strokeStyle = "rgba(35,134,207," + 0.18 * (1 - d / 110) + ")";
+      if (d < 120) {
+        cx.strokeStyle = "rgba(" + cvc + "," + 0.2 * (1 - d / 120) + ")";
         cx.beginPath();
         cx.moveTo(p.x, p.y);
         cx.lineTo(q.x, q.y);
@@ -124,8 +190,8 @@ addEventListener("mousemove", function (e) {
       }
     }
     var dm = Math.hypot(p.x - m.x, p.y - m.y);
-    if (dm < 140) {
-      cx.strokeStyle = "rgba(20,38,79," + 0.25 * (1 - dm / 140) + ")";
+    if (dm < 150) {
+      cx.strokeStyle = "rgba(37,132,198," + 0.5 * (1 - dm / 150) + ")";
       cx.beginPath();
       cx.moveTo(p.x, p.y);
       cx.lineTo(m.x, m.y);
@@ -134,7 +200,6 @@ addEventListener("mousemove", function (e) {
   });
   requestAnimationFrame(f);
 })();
-
 if ("serviceWorker" in navigator && location.protocol !== "file:") {
   addEventListener("load", function () {
     navigator.serviceWorker.register("sw.js").catch(function () {});

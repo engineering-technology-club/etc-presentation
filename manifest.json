@@ -1,16 +1,16 @@
 {
- "name": "النادي الهندسي والتكنولوجي – ETC",
+ "name": "النادي الهندسي والتكنولوجي - ETC",
  "short_name": "ETC",
  "lang": "ar",
  "dir": "rtl",
  "start_url": "./index.html",
  "display": "fullscreen",
- "background_color": "#F3F7FC",
- "theme_color": "#F3F7FC",
+ "background_color": "#17264F",
+ "theme_color": "#17264F",
  "icons": [
   {
-   "src": "images/club-app-icon.png",
-   "sizes": "512x512",
+   "src": "images/logo.png",
+   "sizes": "900x876",
    "type": "image/png"
   }
  ]
