@@ -644,3 +644,40 @@ mark {
     transition-duration: 0.01s !important;
   }
 }
+
+/* =================================
+   FIX 1: First Slide - Logo & Title
+   ================================= */
+
+#s1 .disc.dbig {
+  left: 150px;
+  top: 130px;
+  width: 400px;
+  height: 400px;
+}
+
+#s1 h1 {
+  right: 65px;
+  width: 570px;
+  font-size: 74px;
+  line-height: 1.2;
+}
+
+#s1 .en,
+#s1 .ar {
+  right: 65px;
+  width: 570px;
+}
+
+/* =================================
+   FIX 2: First Female Photo in Slide 6
+   ================================= */
+
+#s6 .prow.c6:first-child .person:nth-child(4) .ph img {
+  width: 100% !important;
+  height: 100% !important;
+  left: 0 !important;
+  top: 0 !important;
+  object-fit: cover;
+  object-position: center 30%;
+}
