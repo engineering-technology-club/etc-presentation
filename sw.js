@@ -1,4 +1,4 @@
-const V = "etc-v4";
+const V = "etc-v5";
 const FILES = [
   "./",
   "index.html",

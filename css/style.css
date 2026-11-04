@@ -681,3 +681,25 @@ mark {
   object-fit: cover;
   object-position: center 30%;
 }
+
+/* =================================
+   FIX 3: First Slide - rays centered on logo & circuit not crossing title
+   ================================= */
+
+/* the inline style on .sun (left:20px; top:-40px) used the old logo position,
+   so !important is needed to re-center the rays on the logo disc
+   (disc center = 350px, 330px  ->  sun 800x800 => left -50, top -70) */
+#s1 .sun {
+  left: -50px !important;
+  top: -70px !important;
+}
+
+#s1 .circ {
+  width: 240px;
+  top: 10px;
+  right: 40px;
+}
+
+#s1 h1 {
+  top: 215px;
+}
